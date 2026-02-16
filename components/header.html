@@ -1,0 +1,91 @@
+<!-- Header Component -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="/index.html" class="navbar-brand">🎬 STREAMSHOP</a>
+    
+    <ul class="navbar-nav" id="navMenu">
+      <li><a href="/index.html" class="nav-link" data-page="home">หน้าแรก</a></li>
+      <li><a href="/pages/products.html" class="nav-link" data-page="products">สินค้า</a></li>
+      <li><a href="/pages/promotions.html" class="nav-link" data-page="promotions">โปรโมชั่น</a></li>
+      <li><a href="/pages/reviews.html" class="nav-link" data-page="reviews">รีวิว</a></li>
+    </ul>
+
+    <div class="navbar-actions">
+      <button class="btn btn-ghost btn-sm" id="historyBtn" onclick="goToHistory()" style="display:none;">
+        📋 ประวัติ
+      </button>
+      <button class="btn btn-outline btn-sm" id="loginBtn" onclick="openModal('loginModal')">
+        เข้าสู่ระบบ
+      </button>
+      <button class="btn btn-primary btn-sm" id="registerBtn" onclick="openModal('registerModal')">
+        สมัครสมาชิก
+      </button>
+      <span class="btn btn-ghost btn-sm" id="userGreeting" style="display:none;"></span>
+      <button class="btn btn-outline btn-sm" id="logoutBtn" onclick="logout()" style="display:none;">
+        ออกจากระบบ
+      </button>
+      <div class="navbar-toggle" id="navToggle" onclick="toggleNav()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Login Modal -->
+<div class="modal-backdrop" id="loginModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">🔐 เข้าสู่ระบบ</h3>
+      <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+    </div>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label">อีเมล</label>
+        <input type="email" class="form-input" id="loginEmail" placeholder="กรอกอีเมล" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">รหัสผ่าน</label>
+        <input type="password" class="form-input" id="loginPassword" placeholder="กรอกรหัสผ่าน" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">เข้าสู่ระบบ</button>
+      <p class="text-center mt-md text-muted" style="font-size: 0.85rem;">
+        ยังไม่มีบัญชี? <a href="#" onclick="switchModal('loginModal','registerModal')" style="color:var(--color-primary);">สมัครสมาชิก</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal-backdrop" id="registerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">📝 สมัครสมาชิก</h3>
+      <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+    </div>
+    <form onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label class="form-label">ชื่อผู้ใช้</label>
+        <input type="text" class="form-input" id="regName" placeholder="กรอกชื่อผู้ใช้" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">อีเมล</label>
+        <input type="email" class="form-input" id="regEmail" placeholder="กรอกอีเมล" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">รหัสผ่าน</label>
+        <input type="password" class="form-input" id="regPassword" placeholder="กรอกรหัสผ่าน (อย่างน้อย 6 ตัว)" minlength="6" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ยืนยันรหัสผ่าน</label>
+        <input type="password" class="form-input" id="regPasswordConfirm" placeholder="กรอกรหัสผ่านอีกครั้ง" minlength="6" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">สมัครสมาชิก</button>
+      <p class="text-center mt-md text-muted" style="font-size: 0.85rem;">
+        มีบัญชีแล้ว? <a href="#" onclick="switchModal('registerModal','loginModal')" style="color:var(--color-primary);">เข้าสู่ระบบ</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
