@@ -1,21 +1,149 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="STREAMSHOP - แพลตฟอร์มขายแพ็คเกจสตรีมมิ่งออนไลน์ที่ดีที่สุด บริการรวดเร็ว ปลอดภัย">
+    <title>STREAMSHOP - หน้าแรก</title>
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/base.css">
-    <title>Movie App Store - ร้านขายแอปดูหนัง</title>
+    <link rel="stylesheet" href="css/components.css">
 </head>
+
 <body>
-    <nav>
-        <button onclick="location.href='index.html'">หน้าแรก</button>
-        <button onclick="location.href='pages/history.html'">ประวัติการซื้อ</button>
-        <button id="login-btn">เข้าสู่ระบบ</button>
-    </nav>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
 
-    <main id="product-display">
-        </main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg" style="background-image: url('images/hero-banner.svg');"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">สตรีมมิ่งไม่จำกัด เริ่มต้นเพียง ฿199</h1>
+            <p class="hero-subtitle">
+                เพลิดเพลินกับคอนเทนต์คุณภาพสูง ดูได้ทุกที่ทุกเวลา พร้อมแพ็คเกจที่เหมาะกับคุณ
+            </p>
+            <div class="hero-actions">
+                <button class="btn btn-primary btn-lg"
+                    onclick="document.getElementById('featured-section').scrollIntoView({behavior:'smooth'})">
+                    🎬 ดูแพ็คเกจทั้งหมด
+                </button>
+                <button class="btn btn-outline btn-lg" onclick="openModal('registerModal')">
+                    สมัครเลย - ฟรี!
+                </button>
+            </div>
+        </div>
+    </section>
 
-    <script type="module" src="js/main.js"></script>
+    <!-- Featured Products -->
+    <section class="section" id="featured-section">
+        <div class="container">
+            <h2 class="section-title">🔥 แพ็คเกจยอดนิยม</h2>
+            <p class="section-subtitle">เลือกแพ็คเกจที่เหมาะกับคุณ</p>
+            <div class="grid grid-3" id="featuredProducts"></div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="section" style="background: var(--color-bg-secondary);">
+        <div class="container">
+            <h2 class="section-title">✨ ทำไมต้องเลือกเรา</h2>
+            <p class="section-subtitle">บริการที่ดีที่สุดสำหรับคุณ</p>
+            <div class="grid grid-4">
+                <div class="card animate-on-scroll" style="text-align:center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+                    <h4>เร็วทันใจ</h4>
+                    <p class="card-text">เปิดใช้งานได้ทันทีหลังชำระเงิน</p>
+                </div>
+                <div class="card animate-on-scroll" style="text-align:center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+                    <h4>ปลอดภัย 100%</h4>
+                    <p class="card-text">ระบบรักษาความปลอดภัยระดับสูง</p>
+                </div>
+                <div class="card animate-on-scroll" style="text-align:center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">💎</div>
+                    <h4>คุณภาพระดับพรีเมียม</h4>
+                    <p class="card-text">คอนเทนต์คุณภาพ 4K HDR</p>
+                </div>
+                <div class="card animate-on-scroll" style="text-align:center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎧</div>
+                    <h4>ซัพพอร์ต 24/7</h4>
+                    <p class="card-text">ทีมงานพร้อมช่วยเหลือตลอดเวลา</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Preview -->
+    <section class="section">
+        <div class="container">
+            <div class="promo-banner animate-on-scroll">
+                <div class="promo-banner-bg" style="background-image: url('images/promo-banner.svg');"></div>
+                <div class="promo-banner-content">
+                    <h2 style="font-size: var(--font-size-3xl); margin-bottom: var(--space-md);">
+                        🎉 โปรโมชั่นพิเศษ!
+                    </h2>
+                    <p
+                        style="font-size: var(--font-size-md); color: rgba(255,255,255,0.9); margin-bottom: var(--space-xl);">
+                        สมัครวันนี้ รับส่วนลดสูงสุด 50% พร้อมของแถมอีกมากมาย!
+                    </p>
+                    <a href="pages/promotions.html" class="btn btn-ghost btn-lg">ดูโปรโมชั่นทั้งหมด →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFlja2-S_3DvuTx5xsg-x94u4dXBTO_Hg",
+            authDomain: "streamshop-f86a8.firebaseapp.com",
+            databaseURL: "https://streamshop-f86a8-default-rtdb.asia-southeast1.firebasedatabase.app", // เพิ่มบรรทัดนี้
+            projectId: "streamshop-f86a8",
+            storageBucket: "streamshop-f86a8.firebasestorage.app",
+            messagingSenderId: "5111966648",
+            appId: "1:5111966648:web:df6896d1edf0401959bd4d",
+            measurementId: "G-2TXXGSYLZL"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database(); 
+    </script>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Render featured products on homepage
+        // แก้เป็น async function
+        async function renderFeaturedProducts() {
+            const products = await getProducts(); // เติม await ตรงนี้
+            const container = document.getElementById('featuredProducts');
+            if (!container) return;
+
+            if (products.length === 0) {
+                container.innerHTML = '<p class="text-center text-muted" style="grid-column:1/-1;">ยังไม่มีสินค้า</p>';
+                return;
+            }
+
+            container.innerHTML = products.slice(0, 6).map(p => renderProductCard(p, true)).join('');
+            initAnimations();
+        }
+
+        // Wait for components to load then render
+        const originalInit = initComponents;
+        initComponents = async function () {
+            await originalInit();
+            renderFeaturedProducts();
+        };
+    </script>
 </body>
+
 </html>
