@@ -94,29 +94,46 @@ function handleRegister(e) {
 
 function handleLogin(e) {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
-    // Check admin
+    // 1. ตรวจสอบว่าเป็นแอดมินหรือไม่
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        setCurrentUser({ id: 'admin', name: 'Admin', email: ADMIN_EMAIL, isAdmin: true });
+        // --- ส่วนที่ต้องเพิ่ม/แก้ไข ---
+        const adminUser = {
+            id: 'admin',
+            name: 'แอดมินระบบ',
+            email: email,
+            role: 'admin' // ใส่ Role ให้ชัดเจน
+        };
+        localStorage.setItem('ss_user', JSON.stringify(adminUser));
+        sessionStorage.setItem('adminAuth', 'true'); // สำหรับเช็คในหน้า admin.html
+        // ---------------------------
+
+        showToast('เข้าสู่ระบบในฐานะแอดมิน ⚙️', 'success');
         closeModal('loginModal');
         updateAuthUI();
-        showToast('เข้าสู่ระบบแอดมินสำเร็จ! 🔑', 'success');
+
+        // พาไปหน้าแอดมิน
         setTimeout(() => {
-            const isSubPage = window.location.pathname.includes('/pages/');
-            window.location.href = isSubPage ? 'admin.html' : 'pages/admin.html';
+            window.location.href = window.location.pathname.includes('/pages/') ? 'admin.html' : 'pages/admin.html';
         }, 1000);
         return;
     }
 
-    // Check user
-    const users = getUsers();
+    // 2. ถ้าไม่ใช่แอดมิน ให้เช็ค User ปกติ (โค้ดเดิมของคุณ)
+    const users = JSON.parse(localStorage.getItem('ss_users') || '[]');
     const user = users.find(u => u.email === email && u.password === password);
-    if (!user) {
+
+    if (user) {
+        localStorage.setItem('ss_user', JSON.stringify(user));
+        showToast(`ยินดีต้อนรับคุณ ${user.name} 😊`, 'success');
+        closeModal('loginModal');
+        updateAuthUI();
+    } else {
         showToast('อีเมลหรือรหัสผ่านไม่ถูกต้อง', 'error');
-        return;
     }
+
 
     setCurrentUser(user);
     closeModal('loginModal');
@@ -461,4 +478,5 @@ async function startApp() {
 }
 
 // เรียกใช้งานฟังก์ชันเริ่มต้น
+
 document.addEventListener('DOMContentLoaded', startApp);
