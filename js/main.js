@@ -2,7 +2,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebas
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  // วางโค้ดที่ก๊อปมาจาก Firebase ตรงนี้
+  apiKey: "AIzaSyC0FAHicxw8rS848XDPLIk5MFzIUWN1sMA",
+  authDomain: "wednf-eeff9.firebaseapp.com",
+  projectId: "wednf-eeff9",
+  storageBucket: "wednf-eeff9.firebasestorage.app",
+  messagingSenderId: "778108810647",
+  appId: "1:778108810647:web:bb3818dafd6ea2eaa480d2",
+  measurementId: "G-HHLKP4PT7M"
 };
 
 const app = initializeApp(firebaseConfig);
