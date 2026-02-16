@@ -20,7 +20,7 @@
                 <p style="font-size: 0.8rem; color: var(--color-text-muted);">จัดการระบบ</p>
             </div>
             <div class="sidebar-item active" onclick="switchSection('products')">
-                <span class="icon">📦</span> รายการสินค้า
+                <span class="icon">📦</span> เพิ่มออเดอร์สินค้า
             </div>
             <div class="sidebar-item" onclick="switchSection('payment')">
                 <span class="icon">💳</span> ช่องทางชำระเงิน
@@ -57,8 +57,7 @@
                                     <th>จัดการ</th>
                                 </tr>
                             </thead>
-                            <tbody id="productsTableBody">
-                                </tbody>
+                            <tbody id="productsTableBody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -73,7 +72,7 @@
                             <input type="text" id="accName" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">เลขที่บัญชี / เบอร์พร้อมเพย์</label>
+                            <label class="form-label">เลขที่บัญชี</label>
                             <input type="text" id="accNumber" class="form-control" required>
                         </div>
                         <div class="form-group">
@@ -85,7 +84,7 @@
                             <input type="file" id="qrImage" class="form-control" accept="image/*">
                             <div id="qrPreview" style="margin-top: 1rem; max-width: 200px;"></div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">บันทึกข้อมูล</button>
+                        <button type="submit" class="btn btn-primary w-100">บันทึกข้อมูลชำระเงิน</button>
                     </form>
                 </div>
             </section>
@@ -120,7 +119,7 @@
                 <span class="modal-close" onclick="closeModal('productModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="productForm" onsubmit="handleFormSubmit(event)">
+                <form id="productForm" onsubmit="handleProductSubmit(event)">
                     <div class="form-group">
                         <label class="form-label">ชื่อแพ็คเกจ *</label>
                         <input type="text" id="productName" class="form-control" required>
@@ -139,12 +138,12 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">รูปภาพ</label>
-                        <input type="file" id="productImageInput" class="form-control" accept="image/*">
+                        <input type="file" id="productImage" class="form-control" accept="image/*">
                         <div id="imagePreview" style="margin-top: 1rem; max-width: 100%;"></div>
                     </div>
                     <div class="flex gap-md" style="justify-content: flex-end; margin-top: 2rem;">
                         <button type="button" class="btn btn-outline" onclick="closeModal('productModal')">ยกเลิก</button>
-                        <button type="submit" class="btn btn-primary">บันทึกสินค้าออนไลน์</button>
+                        <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
                     </div>
                 </form>
             </div>
@@ -153,119 +152,103 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="../js/main.js"></script>
 
     <script>
-        // 1. Firebase Config (ใช้ของคุณ)
+        // ใช้ config เดียวกับที่อยู่ในไฟล์ index.html ของคุณ
         const firebaseConfig = {
             apiKey: "AIzaSyCFlja2-S_3DvuTx5xsg-x94u4dXBTO_Hg",
             authDomain: "streamshop-f86a8.firebaseapp.com",
             databaseURL: "https://streamshop-f86a8-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "streamshop-f86a8",
+            projectId: "streamshop-f86a8"
         };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let currentImageBase64 = "";
-        let editingId = null;
+        let currentProductImage = "";
+        let currentQrImage = "";
 
-        // 2. ตรวจสอบแอดมิน (ใช้ค่าเดียวกับ main.js)
-        function checkAdmin() {
-            const isAuth = sessionStorage.getItem('adminAuth') === 'true';
-            if (!isAuth) {
-                window.location.href = '../index.html';
-            }
+        // ฟังก์ชันเปลี่ยนเมนู (Code เดิม)
+        function switchSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(sectionId + 'Section').classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            const titles = { 'products': 'การจัดการสินค้า', 'payment': 'ตั้งค่าช่องทางชำระเงิน', 'orders': 'รายการสั่งซื้อ' };
+            document.getElementById('sectionTitle').textContent = titles[sectionId];
         }
 
-        // 3. จัดการรูปภาพ
-        document.getElementById('productImageInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    currentImageBase64 = ev.target.result;
-                    document.getElementById('imagePreview').innerHTML = `<img src="${currentImageBase64}" style="max-height:150px; border-radius:8px;">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // 4. บันทึก/แก้ไข สินค้าไป Firebase
-        async function handleFormSubmit(e) {
+        // ระบบเพิ่มสินค้าลง Firebase
+        async function handleProductSubmit(e) {
             e.preventDefault();
-            const data = {
+            const productData = {
                 name: document.getElementById('productName').value,
                 price: Number(document.getElementById('productPrice').value),
                 badge: document.getElementById('productBadge').value,
                 description: document.getElementById('productDescription').value,
-                image: currentImageBase64,
-                updatedAt: new Date().toISOString()
+                image: currentProductImage,
+                createdAt: new Date().toISOString()
             };
 
             try {
-                if (editingId) {
-                    await db.ref('products/' + editingId).update(data);
-                } else {
-                    await db.ref('products').push(data);
-                }
-                alert("บันทึกข้อมูลเรียบร้อย!");
-                closeModal('productModal');
+                await db.ref('products').push(productData);
+                alert("เพิ่มสินค้าสำเร็จ!");
                 location.reload();
-            } catch (err) {
-                alert("เกิดข้อผิดพลาด: " + err.message);
-            }
+            } catch (err) { alert("Error: " + err.message); }
         }
 
-        // 5. ดึงข้อมูลมาโชว์ในตาราง
-        async function loadProducts() {
+        // ระบบแสดงผลตารางสินค้า
+        async function renderProductsTable() {
             const snapshot = await db.ref('products').once('value');
             const data = snapshot.val();
             const tbody = document.getElementById('productsTableBody');
-            if (!data) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ยังไม่มีสินค้า</td></tr>';
-                return;
-            }
-            
+            if (!data) return;
+
             const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
             document.getElementById('productCount').textContent = list.length;
-
+            
             tbody.innerHTML = list.map(p => `
                 <tr>
-                    <td><img src="${p.image}" class="table-img" style="width:50px;height:50px;object-fit:cover;"></td>
+                    <td><img src="${p.image}" class="table-img" style="width:50px; height:50px; object-fit:cover;"></td>
                     <td>${p.name}</td>
                     <td>฿${p.price}</td>
                     <td>${p.badge || '-'}</td>
-                    <td>
-                        <button onclick="deleteProduct('${p.id}')" class="btn btn-danger btn-sm">ลบ</button>
-                    </td>
+                    <td><button onclick="deleteProduct('${p.id}')" class="btn btn-danger btn-sm">ลบ</button></td>
                 </tr>
             `).join('');
         }
 
         async function deleteProduct(id) {
-            if (confirm('คุณต้องการลบสินค้านี้ใช่ไหม?')) {
-                await db.ref('products/' + id).remove();
+            if (confirm('ลบสินค้านี้ใช่ไหม?')) {
+                await db.ref(`products/${id}`).remove();
                 location.reload();
             }
         }
 
-        // ระบบเปลี่ยนหน้า (Sidebar)
-        function switchSection(id) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(id + 'Section').classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
+        // จัดการรูปภาพ
+        document.getElementById('productImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    currentProductImage = ev.target.result;
+                    document.getElementById('imagePreview').innerHTML = `<img src="${currentProductImage}" style="max-width:100px;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
+        // UI Helpers
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function logout() { sessionStorage.clear(); window.location.href = '../index.html'; }
 
-        // เริ่มต้นทำงาน
-        window.onload = () => {
-            checkAdmin();
-            loadProducts();
+        // เริ่มต้น
+        window.onload = async () => {
+            if (sessionStorage.getItem('adminAuth') !== 'true') window.location.href = '../index.html';
+            await renderProductsTable();
         };
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>
