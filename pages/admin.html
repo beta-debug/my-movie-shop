@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,154 +8,229 @@
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/components.css">
-    <style>
-        /* ซ่อมหน้าจอเละ - เพิ่มสไตล์เฉพาะหน้า Admin */
-        .admin-layout { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; background: var(--color-bg-secondary); }
-        .sidebar { background: var(--color-bg-primary); border-right: 1px solid var(--color-border); padding: 2rem 0; }
-        .sidebar-item { padding: 1rem 1.5rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-        .sidebar-item:hover, .sidebar-item.active { background: rgba(229, 9, 20, 0.1); color: var(--color-primary); border-left: 4px solid var(--color-primary); }
-        .admin-content { padding: 2rem; }
-        .content-section { display: none; }
-        .content-section.active { display: block; }
-        .table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
-        .table th, .table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--color-border); }
-        .table th { background: #f8f9fa; font-weight: 600; }
-        .table-img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
-        @media (max-width: 768px) { .admin-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
-    </style>
 </head>
+
 <body>
     <div id="header-placeholder"></div>
 
     <div class="admin-layout">
-        <aside class="sidebar">
+        <aside class="sidebar" id="adminSidebar">
             <div style="padding: 0 1.5rem 1.5rem; border-bottom: 1px solid var(--color-border); margin-bottom: 1rem;">
-                <h3 style="color: var(--color-primary);">⚙️ แอดมิน</h3>
+                <h3 style="font-size: 1rem; color: var(--color-primary);">⚙️ แอดมิน</h3>
+                <p style="font-size: 0.8rem; color: var(--color-text-muted);">จัดการระบบ</p>
             </div>
-            <div class="sidebar-item active" onclick="switchSection('products')">📦 จัดการสินค้า</div>
-            <div class="sidebar-item" onclick="switchSection('payment')">💳 ชำระเงิน</div>
-            <div class="sidebar-item" style="color: var(--color-danger); margin-top: 2rem;" onclick="logout()">🚪 ออกจากระบบ</div>
+            <div class="sidebar-item active" onclick="switchSection('products')">
+                <span class="icon">📦</span> รายการสินค้า
+            </div>
+            <div class="sidebar-item" onclick="switchSection('payment')">
+                <span class="icon">💳</span> ช่องทางชำระเงิน
+            </div>
+            <div class="sidebar-item" onclick="switchSection('orders')">
+                <span class="icon">🛒</span> ออเดอร์ลูกค้า
+            </div>
+            <div class="sidebar-item" style="margin-top: auto; color: var(--color-danger);" onclick="logout()">
+                <span class="icon">🚪</span> ออกจากระบบ
+            </div>
         </aside>
 
         <main class="admin-content">
+            <div class="flex" style="justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h1 style="font-size: 1.5rem; margin:0;" id="sectionTitle">การจัดการสินค้า</h1>
+                <button class="btn btn-primary" id="sidebarToggle" style="display: none;">☰ เมนู</button>
+            </div>
+
             <section id="productsSection" class="content-section active">
-                <div class="flex" style="justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2>📦 รายการสินค้าออนไลน์ (<span id="productCount">0</span>)</h2>
-                    <button class="btn btn-primary" onclick="openModal('productModal')">+ เพิ่มสินค้าใหม่</button>
+                <div class="card">
+                    <div class="flex" style="justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="font-size: 1.25rem; margin:0;">รายการแพ็คเกจ (<span id="productCount">0</span>)</h2>
+                        <button class="btn btn-primary" onclick="openModal('productModal')">+ เพิ่มสินค้าใหม่</button>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>รูปภาพ</th>
+                                    <th>ชื่อแพ็คเกจ</th>
+                                    <th>ราคา</th>
+                                    <th>ป้ายกำกับ</th>
+                                    <th>จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>รูป</th>
-                            <th>ชื่อสินค้า</th>
-                            <th>ราคา</th>
-                            <th>ป้าย</th>
-                            <th>จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productsTableBody"></tbody>
-                </table>
+            </section>
+
+            <section id="paymentSection" class="content-section">
+                <div class="card" style="max-width: 600px;">
+                    <h2 style="font-size: 1.25rem; margin-bottom: 1.5rem;">ตั้งค่าบัญชีรับเงิน</h2>
+                    <form id="paymentForm" onsubmit="savePaymentSettings(event)">
+                        <div class="form-group">
+                            <label class="form-label">ชื่อบัญชี</label>
+                            <input type="text" id="accName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">เลขที่บัญชี / เบอร์พร้อมเพย์</label>
+                            <input type="text" id="accNumber" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ธนาคาร</label>
+                            <input type="text" id="accBank" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">QR Code</label>
+                            <input type="file" id="qrImage" class="form-control" accept="image/*">
+                            <div id="qrPreview" style="margin-top: 1rem; max-width: 200px;"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">บันทึกข้อมูล</button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="ordersSection" class="content-section">
+                <div class="card">
+                    <h2 style="font-size: 1.25rem; margin-bottom: 1.5rem;">รายการสั่งซื้อลูกค้า</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>วันที่</th>
+                                    <th>ลูกค้า</th>
+                                    <th>แพ็คเกจ</th>
+                                    <th>ยอดรวม</th>
+                                    <th>สถานะ</th>
+                                    <th>จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
 
     <div id="productModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header">
-                <h3>เพิ่ม/แก้ไขสินค้า</h3>
+                <h3 id="modalTitle">เพิ่มสินค้าใหม่</h3>
                 <span class="modal-close" onclick="closeModal('productModal')">&times;</span>
             </div>
-            <form id="adminProductForm" onsubmit="saveProductToFirebase(event)">
-                <div class="form-group">
-                    <label>ชื่อสินค้า</label>
-                    <input type="text" id="pName" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>ราคา</label>
-                    <input type="number" id="pPrice" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>ป้ายกำกับ (เช่น ยอดนิยม)</label>
-                    <input type="text" id="pBadge" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>รายละเอียด</label>
-                    <textarea id="pDesc" class="form-control"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>รูปภาพ</label>
-                    <input type="file" id="pImage" class="form-control" accept="image/*">
-                    <div id="pPreview" style="margin-top: 10px;"></div>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">บันทึกข้อมูลออนไลน์</button>
-            </form>
+            <div class="modal-body">
+                <form id="productForm" onsubmit="handleFormSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">ชื่อแพ็คเกจ *</label>
+                        <input type="text" id="productName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ราคา (บาท) *</label>
+                        <input type="number" id="productPrice" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ป้ายกำกับ</label>
+                        <input type="text" id="productBadge" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">รายละเอียด</label>
+                        <textarea id="productDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">รูปภาพ</label>
+                        <input type="file" id="productImageInput" class="form-control" accept="image/*">
+                        <div id="imagePreview" style="margin-top: 1rem; max-width: 100%;"></div>
+                    </div>
+                    <div class="flex gap-md" style="justify-content: flex-end; margin-top: 2rem;">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('productModal')">ยกเลิก</button>
+                        <button type="submit" class="btn btn-primary">บันทึกสินค้าออนไลน์</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="../js/main.js"></script>
 
     <script>
-        // 1. ตั้งค่า Firebase เฉพาะหน้าแอดมิน
-        const conf = {
+        // 1. Firebase Config (ใช้ของคุณ)
+        const firebaseConfig = {
             apiKey: "AIzaSyCFlja2-S_3DvuTx5xsg-x94u4dXBTO_Hg",
             authDomain: "streamshop-f86a8.firebaseapp.com",
             databaseURL: "https://streamshop-f86a8-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "streamshop-f86a8"
+            projectId: "streamshop-f86a8",
         };
-        if (!firebase.apps.length) firebase.initializeApp(conf);
-        const rdb = firebase.database();
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        let currentImgBase64 = "";
+        let currentImageBase64 = "";
+        let editingId = null;
 
-        // 2. จัดการรูปภาพ
-        document.getElementById('pImage').addEventListener('change', function(e) {
+        // 2. ตรวจสอบแอดมิน (ใช้ค่าเดียวกับ main.js)
+        function checkAdmin() {
+            const isAuth = sessionStorage.getItem('adminAuth') === 'true';
+            if (!isAuth) {
+                window.location.href = '../index.html';
+            }
+        }
+
+        // 3. จัดการรูปภาพ
+        document.getElementById('productImageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    currentImgBase64 = ev.target.result;
-                    document.getElementById('pPreview').innerHTML = `<img src="${currentImgBase64}" style="width:100px; border-radius:4px;">`;
+                    currentImageBase64 = ev.target.result;
+                    document.getElementById('imagePreview').innerHTML = `<img src="${currentImageBase64}" style="max-height:150px; border-radius:8px;">`;
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // 3. ฟังก์ชันบันทึก (Firebase ตรง)
-        async function saveProductToFirebase(e) {
+        // 4. บันทึก/แก้ไข สินค้าไป Firebase
+        async function handleFormSubmit(e) {
             e.preventDefault();
-            const newProduct = {
-                name: document.getElementById('pName').value,
-                price: Number(document.getElementById('pPrice').value),
-                badge: document.getElementById('pBadge').value,
-                description: document.getElementById('pDesc').value,
-                image: currentImgBase64 || '',
-                createdAt: new Date().toISOString()
+            const data = {
+                name: document.getElementById('productName').value,
+                price: Number(document.getElementById('productPrice').value),
+                badge: document.getElementById('productBadge').value,
+                description: document.getElementById('productDescription').value,
+                image: currentImageBase64,
+                updatedAt: new Date().toISOString()
             };
 
             try {
-                await rdb.ref('products').push(newProduct);
-                alert("เพิ่มสินค้าสำเร็จ!");
+                if (editingId) {
+                    await db.ref('products/' + editingId).update(data);
+                } else {
+                    await db.ref('products').push(data);
+                }
+                alert("บันทึกข้อมูลเรียบร้อย!");
                 closeModal('productModal');
-                location.reload(); // รีโหลดเพื่ออัปเดตตาราง
+                location.reload();
             } catch (err) {
-                alert("Error: " + err.message);
+                alert("เกิดข้อผิดพลาด: " + err.message);
             }
         }
 
-        // 4. แสดงตารางสินค้า
-        async function loadAdminProducts() {
-            const snapshot = await rdb.ref('products').once('value');
+        // 5. ดึงข้อมูลมาโชว์ในตาราง
+        async function loadProducts() {
+            const snapshot = await db.ref('products').once('value');
             const data = snapshot.val();
-            const list = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-            
-            document.getElementById('productCount').textContent = list.length;
             const tbody = document.getElementById('productsTableBody');
+            if (!data) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ยังไม่มีสินค้า</td></tr>';
+                return;
+            }
             
+            const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+            document.getElementById('productCount').textContent = list.length;
+
             tbody.innerHTML = list.map(p => `
                 <tr>
-                    <td><img src="${p.image}" class="table-img"></td>
+                    <td><img src="${p.image}" class="table-img" style="width:50px;height:50px;object-fit:cover;"></td>
                     <td>${p.name}</td>
                     <td>฿${p.price}</td>
                     <td>${p.badge || '-'}</td>
@@ -166,23 +242,30 @@
         }
 
         async function deleteProduct(id) {
-            if (confirm('ลบสินค้านี้ใช่ไหม?')) {
-                await rdb.ref(`products/${id}`).remove();
+            if (confirm('คุณต้องการลบสินค้านี้ใช่ไหม?')) {
+                await db.ref('products/' + id).remove();
                 location.reload();
             }
         }
 
+        // ระบบเปลี่ยนหน้า (Sidebar)
         function switchSection(id) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
             document.getElementById(id + 'Section').classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        // เริ่มต้น
-        document.addEventListener('DOMContentLoaded', () => {
-            loadAdminProducts();
-            if (typeof initComponents === 'function') initComponents();
-        });
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function logout() { sessionStorage.clear(); window.location.href = '../index.html'; }
+
+        // เริ่มต้นทำงาน
+        window.onload = () => {
+            checkAdmin();
+            loadProducts();
+        };
     </script>
+    <script src="../js/main.js"></script>
 </body>
 </html>
-
