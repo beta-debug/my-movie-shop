@@ -1,0 +1,29 @@
+<div class="admin-grid">
+    <div class="sidebar">
+        <button onclick="switchTab('add-item')">เพิ่มสินค้า</button>
+        <button onclick="switchTab('send-account')">ส่งรหัสให้ลูกค้า</button>
+    </div>
+
+    <div class="main-content">
+        <section id="add-item">
+            <input type="text" id="p-name" placeholder="ชื่อแอป">
+            <input type="text" id="p-price" placeholder="ราคา">
+            <input type="text" id="p-img" placeholder="URL รูปภาพสินค้า">
+            <button id="btn-save">ยืนยันเพิ่มสินค้า</button>
+        </section>
+
+        <section id="send-account" style="display:none;">
+            <div id="order-list">
+                <div class="order-item">
+                    <span>ออเดอร์ #123</span>
+                    <button class="menu-dots">⋮</button> </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div id="modal-send" class="modal">
+    <input type="text" id="send-email" placeholder="Email แอป">
+    <input type="text" id="send-pass" placeholder="Password แอป">
+    <button id="btn-confirm-send">ส่งให้ลูกค้า</button>
+</div>
