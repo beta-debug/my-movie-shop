@@ -2,73 +2,88 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel - จัดการร้าน</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการระบบ - MOVIEPRIME</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
     <style>
-        body { margin: 0; display: flex; font-family: 'Kanit'; background: #f4f4f4; }
-        .sidebar { width: 250px; background: #2c3e50; color: white; height: 100vh; padding: 20px; position: fixed; }
-        .main-content { margin-left: 290px; padding: 30px; width: 100%; }
-        .sidebar h2 { border-bottom: 1px solid #555; padding-bottom: 10px; }
-        .menu-item { padding: 15px; cursor: pointer; border-radius: 5px; transition: 0.3s; }
-        .menu-item:hover { background: #34495e; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        .btn-add { background: #27ae60; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
-        .order-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; }
-        .three-dots { cursor: pointer; font-size: 1.5rem; padding: 0 10px; }
-        
-        /* Modal หน้าต่างเด้ง */
-        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.3); z-index: 1000; }
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
+        body { background: #000; color: #fff; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background: #111; border-right: 1px solid #222; padding: 20px; position: fixed; height: 100%; }
+        .main-content { margin-left: 260px; flex: 1; padding: 40px; }
+        .sidebar-item { padding: 12px 20px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; color: #aaa; }
+        .sidebar-item:hover, .sidebar-item.active { background: #e50914; color: #fff; }
+        .admin-card { background: #141414; border: 1px solid #222; border-radius: 12px; padding: 25px; margin-bottom: 20px; }
+        .order-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #222; }
+        .three-dots { cursor: pointer; font-size: 24px; padding: 5px 15px; border-radius: 5px; transition: 0.2s; }
+        .three-dots:hover { background: #333; }
+        input, textarea { background: #222 !important; border: 1px solid #333 !important; color: #fff !important; margin-bottom: 15px; }
+        .btn-send { background: #e50914; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Admin Menu</h2>
-        <div class="menu-item" onclick="showTab('add-product')">➕ เพิ่มออเดอร์สินค้า</div>
-        <div class="menu-item" onclick="showTab('payments')">💳 ช่องทางชำระเงิน</div>
-        <div class="menu-item" onclick="showTab('send-creds')">📧 ส่งเมล์/รหัสลูกค้า</div>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <h2 style="color: #e50914; margin-bottom: 30px;">MOVIEPRIME</h2>
+            <div class="sidebar-item active" onclick="showTab('add-order')">📦 เพิ่มออเดอร์สินค้า</div>
+            <div class="sidebar-item" onclick="showTab('payments')">💳 ช่องทางชำระเงิน</div>
+            <div class="sidebar-item" onclick="showTab('send-creds')">📧 ส่งอีเมลและรหัสผ่าน</div>
+        </aside>
+
+        <main class="main-content">
+            <section id="send-creds" style="display:none;">
+                <h1 style="margin-bottom: 20px;">📧 ส่งข้อมูลให้ลูกค้า</h1>
+                <div class="admin-card">
+                    <div class="order-row">
+                        <div>
+                            <strong>ออเดอร์ #6789</strong><br>
+                            <small style="color:#888">ลูกค้า: customer@email.com (Netflix VIP)</small>
+                        </div>
+                        <div class="three-dots" onclick="openCredModal('customer@email.com')">☰</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="add-order">
+                <h1 style="margin-bottom: 20px;">📦 เพิ่มสินค้าลงหน้าเว็บ</h1>
+                <div class="admin-card" style="max-width: 600px;">
+                    <label>ชื่อสินค้า</label>
+                    <input type="text" class="form-control" placeholder="เช่น Netflix 4K 30 วัน">
+                    <label>ราคา (บาท)</label>
+                    <input type="number" class="form-control" placeholder="150">
+                    <label>รายละเอียด</label>
+                    <textarea class="form-control" rows="4"></textarea>
+                    <button class="btn-send">ยืนยันเพิ่มสินค้า</button>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <div class="main-content">
-        <section id="add-product-section" class="card">
-            <h2>เพิ่มสินค้าใหม่</h2>
-            <input type="text" placeholder="ใส่ชื่อสินค้า">
-            <input type="text" placeholder="ใส่ราคา">
-            <input type="text" placeholder="ใส่ลิงก์รูปภาพ">
-            <textarea placeholder="ใส่รายละเอียด"></textarea>
-            <button class="btn-add">ยืนยันลงเว็บ</button>
-        </section>
-
-        <section id="send-creds-section" class="card" style="display:none;">
-            <h2>ออเดอร์ลูกค้า</h2>
-            <div class="order-item">
-                <span>ลูกค้า: User_001 (Netflix 30 วัน)</span>
-                <span class="three-dots" onclick="openModal()">⋮</span>
-            </div>
-        </section>
-    </div>
-
-    <div id="overlay" onclick="closeModal()"></div>
-    <div id="modal">
-        <h3>ส่งข้อมูลให้ลูกค้า</h3>
-        <input type="text" id="cust-email" placeholder="กรอกอีเมลเข้าแอป">
-        <input type="text" id="cust-pass" placeholder="กรอกรหัสผ่านเข้าแอป">
-        <button class="btn-add" style="width:100%" onclick="alert('ส่งข้อมูลเรียบร้อย!')">ส่งข้อมูล</button>
+    <div id="credModal" class="modal-backdrop" style="display:none;">
+        <div class="modal" style="background: #181818; border: 1px solid #333; max-width: 400px; padding: 30px; border-radius: 15px; position: relative; margin: 100px auto;">
+            <h3 style="color: #e50914; margin-bottom: 20px;">กรอกข้อมูลส่งให้ลูกค้า</h3>
+            <input type="text" id="targetEmail" class="form-control" readonly style="background: #111 !important;">
+            <input type="text" id="accEmail" class="form-control" placeholder="อีเมลสำหรับล็อกอินแอป">
+            <input type="text" id="accPass" class="form-control" placeholder="รหัสผ่านแอป">
+            <button class="btn-send" onclick="alert('ส่งข้อมูลสำเร็จ!')">กดส่งรหัส</button>
+            <button onclick="closeModal()" style="background:none; border:none; color:#aaa; margin-top:15px; cursor:pointer; width:100%;">ยกเลิก</button>
+        </div>
     </div>
 
     <script>
-        function showTab(tab) {
-            document.getElementById('add-product-section').style.display = tab === 'add-product' ? 'block' : 'none';
-            document.getElementById('send-creds-section').style.display = tab === 'send-creds' ? 'block' : 'none';
+        function showTab(tabId) {
+            document.getElementById('add-order').style.display = tabId === 'add-order' ? 'block' : 'none';
+            document.getElementById('send-creds').style.display = tabId === 'send-creds' ? 'block' : 'none';
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
         }
-        function openModal() { 
-            document.getElementById('modal').style.display = 'block'; 
-            document.getElementById('overlay').style.display = 'block'; 
+        function openCredModal(email) {
+            document.getElementById('targetEmail').value = "ส่งหา: " + email;
+            document.getElementById('credModal').style.display = 'block';
         }
-        function closeModal() { 
-            document.getElementById('modal').style.display = 'none'; 
-            document.getElementById('overlay').style.display = 'none'; 
+        function closeModal() {
+            document.getElementById('credModal').style.display = 'none';
         }
     </script>
 </body>
