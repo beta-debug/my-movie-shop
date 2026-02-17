@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ประวัติการซื้อ - MOVIEPRIME</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body { background: #000; color: #fff; }
+        .container { max-width: 800px; margin: 100px auto; padding: 20px; }
+        .history-card { background: #141414; border: 1px solid #222; border-radius: 10px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .menu-dots { cursor: pointer; font-size: 24px; color: #e50914; }
+        .status-badge { background: #27ae60; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="margin-bottom: 30px;">📋 ประวัติออเดอร์ของคุณ</h1>
+        
+        <div class="history-card">
+            <div>
+                <h3 style="margin:0">Netflix VIP 4K UHD</h3>
+                <small style="color:#888">วันที่สั่งซื้อ: 15 ก.พ. 2024</small>
+            </div>
+            <div style="display:flex; align-items:center; gap:20px;">
+                <span class="status-badge">ได้รับรหัสแล้ว</span>
+                <div class="menu-dots" onclick="viewCreds('user_login@email.com', 'Pass123456')">☰</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewModal" class="modal-backdrop" style="display:none;">
+        <div class="modal" style="background: #181818; border: 1px solid #e50914; max-width: 350px; padding: 30px; border-radius: 15px; margin: 150px auto; text-align: center;">
+            <h3 style="color:#e50914">🔑 ข้อมูลเข้าใช้งาน</h3>
+            <div style="background:#222; padding:15px; border-radius:8px; margin:20px 0; text-align:left;">
+                <p><strong>Email:</strong> <span id="showEmail"></span></p>
+                <p><strong>Password:</strong> <span id="showPass"></span></p>
+            </div>
+            <button class="btn btn-primary" onclick="this.parentElement.parentElement.style.display='none'">ปิดหน้าต่าง</button>
+        </div>
+    </div>
+
+    <script>
+        function viewCreds(email, pass) {
+            document.getElementById('showEmail').innerText = email;
+            document.getElementById('showPass').innerText = pass;
+            document.getElementById('viewModal').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
