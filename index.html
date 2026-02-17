@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOVIEPRIME - พรีเมียมแอปดูหนัง</title>
+    <title>MOVIEPRIME - พรีเมียมสตรีมมิ่ง</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #e50914;
+            --primary: #e50914; /* แดง Netflix */
             --bg-dark: #000000;
-            --card-bg: #181818;
+            --card-bg: #141414;
             --text-main: #ffffff;
-            --text-gray: #a3a3a3;
+            --text-gray: #b3b3b3;
         }
 
         body {
@@ -20,6 +20,7 @@
             font-family: 'Kanit', sans-serif;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
 
         /* Navbar */
@@ -27,8 +28,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            padding: 15px 5%;
+            background: rgba(0, 0, 0, 0.9);
             position: fixed;
             width: 90%;
             top: 0;
@@ -39,119 +40,132 @@
             font-size: 24px;
             font-weight: bold;
             color: var(--primary);
-            letter-spacing: 1px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
         .nav-links a {
             color: var(--text-main);
             text-decoration: none;
-            margin-left: 20px;
             font-size: 14px;
+            font-weight: 300;
             transition: 0.3s;
         }
 
         .nav-links a:hover { color: var(--primary); }
 
-        .btn-login {
+        .btn-admin {
             background: var(--primary);
             color: white;
-            padding: 8px 20px;
-            border-radius: 5px;
+            padding: 8px 15px;
+            border-radius: 4px;
             text-decoration: none;
             font-size: 14px;
+            font-weight: 400;
         }
 
         /* Hero Section */
         .hero {
-            height: 80vh;
-            background: linear-gradient(rgba(0,0,0,0.5), var(--bg-dark)), 
-                        url('https://images.unsplash.com/photo-1574267432553-4b4628081c31?q=80&w=1631&auto=format&fit=crop');
+            height: 90vh;
+            background: linear-gradient(rgba(0,0,0,0.4), var(--bg-dark)), 
+                        url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0 5%;
+            padding-left: 8%;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            line-height: 1.1;
+            font-size: 4rem;
+            margin: 0;
+            font-weight: 600;
+            line-height: 1;
         }
 
+        .hero h1 span { color: var(--primary); }
+
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-gray);
-            max-width: 600px;
-            margin-bottom: 30px;
+            max-width: 500px;
+            margin: 20px 0 30px 0;
+            font-weight: 300;
         }
 
         .btn-cta {
             background: var(--primary);
             color: white;
-            padding: 12px 35px;
+            padding: 12px 30px;
             border-radius: 4px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
             width: fit-content;
+            transition: 0.3s;
         }
 
-        /* Product Grid */
-        .content-section {
-            padding: 50px 5%;
-        }
+        .btn-cta:hover { opacity: 0.8; }
 
-        .section-title {
-            font-size: 22px;
-            margin-bottom: 25px;
-            border-left: 4px solid var(--primary);
+        /* Store Section */
+        .content-section { padding: 40px 8%; }
+
+        .section-header {
+            border-left: 5px solid var(--primary);
             padding-left: 15px;
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            margin: 0;
+            font-weight: 600;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
         }
 
         .product-card {
             background: var(--card-bg);
-            border-radius: 8px;
+            border-radius: 4px;
             overflow: hidden;
-            transition: transform 0.3s;
-            border: 1px solid #222;
+            transition: 0.3s;
+            position: relative;
         }
 
-        .product-card:hover {
-            transform: scale(1.03);
-            border-color: #444;
-        }
+        .product-card:hover { transform: scale(1.05); z-index: 10; }
 
         .product-card img {
             width: 100%;
-            height: 180px;
+            height: 160px;
             object-fit: cover;
         }
 
-        .product-info {
-            padding: 20px;
-        }
+        .product-info { padding: 15px; }
 
         .product-info h3 {
-            margin: 0 0 10px 0;
+            margin: 0;
             font-size: 18px;
+            font-weight: 600;
         }
 
         .product-info p {
-            color: var(--text-gray);
             font-size: 13px;
-            line-height: 1.5;
-            height: 40px;
-            overflow: hidden;
+            color: var(--text-gray);
+            margin: 10px 0;
+            font-weight: 300;
         }
 
-        .product-footer {
+        .price-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -160,7 +174,7 @@
 
         .price {
             font-size: 20px;
-            font-weight: bold;
+            font-weight: 600;
             color: var(--text-main);
         }
 
@@ -168,17 +182,14 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 18px;
-            border-radius: 4px;
+            padding: 6px 15px;
+            border-radius: 3px;
             cursor: pointer;
             font-family: 'Kanit';
-            font-size: 14px;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem; }
-            nav { width: 100%; padding: 15px 5%; box-sizing: border-box; }
+            .hero h1 { font-size: 2.5rem; }
             .nav-links { display: none; }
         }
     </style>
@@ -186,34 +197,37 @@
 <body>
 
     <nav>
-        <div class="logo">MOVIE<span style="color:white">PRIME</span></div>
+        <div class="logo">MOVIEPRIME</div>
         <div class="nav-links">
             <a href="#">หน้าแรก</a>
             <a href="#">ภาพยนตร์</a>
             <a href="#">รายการทีวี</a>
-            <a href="pages/history.html">ประวัติการซื้อ</a>
-            <a href="admin.html" class="btn-login">เข้าสู่ระบบ/แอดมิน</a>
+            <a href="#">ประวัติการซื้อ</a>
+            <a href="admin.html" class="btn-admin">เข้าสู่ระบบ/แอดมิน</a>
         </div>
     </nav>
 
     <div class="hero">
-        <h1>MOVIE UNLIMITED<br><span style="color:var(--primary)">เริ่มต้นเพียง 59.-/เดือน</span></h1>
+        <h1>MOVIE UNLIMITED</h1>
+        <h1 style="color:var(--primary)">เริ่มต้นเพียง 59.-/เดือน</h1>
         <p>รวมแอปสตรีมมิ่งยอดนิยมไว้ในที่เดียว ทั้ง Netflix, Disney+, YouTube Premium และอื่นๆ อีกมากมาย รับประกันดูแลตลอดการใช้งาน</p>
         <a href="#store" class="btn-cta">เลือกซื้อแพ็คเกจ</a>
     </div>
 
     <div id="store" class="content-section">
-        <h2 class="section-title">แพ็คเกจยอดนิยม</h2>
+        <div class="section-header">
+            <h2>แพ็คเกจยอดนิยม</h2>
+        </div>
         
-        <div class="grid" id="product-list">
+        <div class="grid">
             <div class="product-card">
                 <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=500" alt="Netflix">
                 <div class="product-info">
-                    <h3>Netflix VIP Ultra HD 30 วัน</h3>
-                    <p>รับชมความคมชัดระดับ 4K HDR บนทีวี มือถือ หรือคอมพิวเตอร์ ได้ทุกที่</p>
-                    <div class="product-footer">
+                    <h3>Netflix VIP 4K UHD</h3>
+                    <p>รับชมความคมชัดระดับ 4K HDR บนทุกอุปกรณ์ ดูได้ทันทีไม่ต้องรอ</p>
+                    <div class="price-row">
                         <span class="price">150.-</span>
-                        <button class="btn-buy">ซื้อเลย</button>
+                        <button class="btn-buy" onclick="alert('ไปที่หน้าชำระเงิน')">ซื้อเลย</button>
                     </div>
                 </div>
             </div>
@@ -221,11 +235,11 @@
             <div class="product-card">
                 <img src="https://images.unsplash.com/photo-1620332372374-f108c53d2e03?w=500" alt="Disney+">
                 <div class="product-info">
-                    <h3>Disney+ Hotstar 1 ปี</h3>
+                    <h3>Disney+ Hotstar</h3>
                     <p>รับชมภาพยนตร์จาก Marvel, Pixar และ Disney ได้ไม่จำกัด</p>
-                    <div class="product-footer">
-                        <span class="price">760.-</span>
-                        <button class="btn-buy">ซื้อเลย</button>
+                    <div class="price-row">
+                        <span class="price">99.-</span>
+                        <button class="btn-buy" onclick="alert('ไปที่หน้าชำระเงิน')">ซื้อเลย</button>
                     </div>
                 </div>
             </div>
@@ -233,11 +247,11 @@
             <div class="product-card">
                 <img src="https://images.unsplash.com/photo-1619689751121-73359f795771?w=500" alt="YouTube">
                 <div class="product-info">
-                    <h3>YouTube Premium 30 วัน</h3>
-                    <p>ดูวิดีโอแบบไม่มีโฆษณาคั่น ฟังเพลงผ่าน YouTube Music แบบปิดหน้าจอได้</p>
-                    <div class="product-footer">
+                    <h3>YouTube Premium</h3>
+                    <p>ดูวิดีโอไม่มีโฆษณา ฟังเพลงเบื้องหลัง พร้อมสิทธิพิเศษอื่นๆ</p>
+                    <div class="price-row">
                         <span class="price">45.-</span>
-                        <button class="btn-buy">ซื้อเลย</button>
+                        <button class="btn-buy" onclick="alert('ไปที่หน้าชำระเงิน')">ซื้อเลย</button>
                     </div>
                 </div>
             </div>
