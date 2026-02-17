@@ -1,71 +1,287 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    
     <meta charset="UTF-8">
-    <title>ประวัติการซื้อ - MOVIEPRIME</title>
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/components.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOVIEPRIME - พรีเมียมแอปดูหนัง</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { background: #000; color: #fff; }
-        .container { max-width: 800px; margin: 100px auto; padding: 20px; }
-        .history-card { background: #141414; border: 1px solid #222; border-radius: 10px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .menu-dots { cursor: pointer; font-size: 24px; color: #e50914; }
-        .status-badge { background: #27ae60; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+        :root {
+            --primary: #e50914;
+            --bg-dark: #000000;
+            --card-bg: #181818;
+            --text-main: #ffffff;
+            --text-gray: #a3a3a3;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Kanit', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            position: fixed;
+            width: 90%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .btn-login {
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.5), var(--bg-dark)), 
+                        url('https://images.unsplash.com/photo-1574267432553-4b4628081c31?q=80&w=1631&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 5%;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .btn-cta {
+            background: var(--primary);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            width: fit-content;
+        }
+
+        /* Product Grid */
+        .content-section {
+            padding: 50px 5%;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            border: 1px solid #222;
+        }
+
+        .product-card:hover {
+            transform: scale(1.03);
+            border-color: #444;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-info h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+
+        .product-info p {
+            color: var(--text-gray);
+            font-size: 13px;
+            line-height: 1.5;
+            height: 40px;
+            overflow: hidden;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .btn-buy {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Kanit';
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            nav { width: 100%; padding: 15px 5%; box-sizing: border-box; }
+            .nav-links { display: none; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 style="margin-bottom: 30px;">📋 ประวัติออเดอร์ของคุณ</h1>
+
+<nav class="navbar">
+    <div class="logo">MOVIEPRIME</div>
+    <div class="nav-links">
+        <a href="index.html">หน้าแรก</a>
+        <a href="products.html?type=movie">ภาพยนตร์</a>
+        <a href="products.html?type=tv">รายการทีวี</a>
+        <a href="history.html" id="history-link" style="display:none;">ประวัติการซื้อ</a>
         
-        <div class="history-card">
-            <div>
-                <h3 style="margin:0">Netflix VIP 4K UHD</h3>
-                <small style="color:#888">วันที่สั่งซื้อ: 15 ก.พ. 2024</small>
+        <div id="auth-btn-group">
+            <button class="btn btn-primary" onclick="openAuthModal('login')">เข้าสู่ระบบ</button>
+            <button class="btn btn-ghost" onclick="openAuthModal('register')">สมัครสมาชิก</button>
+        </div>
+
+        <div id="user-btn-group" style="display:none; align-items:center; gap:10px;">
+            <span id="nav-username" style="color:white;"></span>
+            <button onclick="logout()" class="btn-logout">ออกจากระบบ</button>
+        </div>
+    </div>
+</nav>
+
+<div id="authModal" class="modal-backdrop" style="display:none;">
+    <div class="modal-card" style="background:#141414; padding:30px; border-radius:10px; border:1px solid #e50914; width:350px; margin: 100px auto;">
+        <h2 id="modalTitle" style="color:#e50914; text-align:center;">เข้าสู่ระบบ</h2>
+        <div style="margin-top:20px;">
+            <input type="email" id="authEmail" placeholder="อีเมล" class="form-control">
+            <input type="password" id="authPass" placeholder="รหัสผ่าน" class="form-control">
+            <div id="registerOnly" style="display:none;">
+                <input type="text" id="authName" placeholder="ชื่อเล่น" class="form-control">
             </div>
-            <div style="display:flex; align-items:center; gap:20px;">
-                <span class="status-badge">ได้รับรหัสแล้ว</span>
-                <div class="menu-dots" onclick="viewCreds('user_login@email.com', 'Pass123456')">☰</div>
+            <button class="btn btn-primary btn-block" onclick="submitAuth()">ตกลง</button>
+            <p id="toggleText" onclick="toggleMode()" style="color:#888; text-align:center; cursor:pointer; font-size:12px; margin-top:15px;"></p>
+        </div>
+    </div>
+</div>
+
+
+<div id="authModal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content: center; align-items: center;">
+    <div style="background: #141414; padding: 40px; border-radius: 10px; width: 300px; text-align: center; border: 1px solid #333;">
+        <h2 id="modalTitle" style="color: #e50914;">เข้าสู่ระบบ</h2>
+        <input type="email" id="authEmail" placeholder="อีเมล" style="width:100%; padding:10px; margin: 10px 0; background: #222; border: 1px solid #444; color: white;">
+        <input type="password" id="authPass" placeholder="รหัสผ่าน" style="width:100%; padding:10px; margin: 10px 0; background: #222; border: 1px solid #444; color: white;">
+        <div id="registerFields">
+            <input type="text" id="authName" placeholder="ชื่อเล่น" style="width:100%; padding:10px; margin: 10px 0; background: #222; border: 1px solid #444; color: white;">
+        </div>
+        <button onclick="handleAuth()" style="width:100%; padding:10px; background: #e50914; border: none; color: white; cursor: pointer; font-weight: bold; margin-top: 10px;">ตกลง</button>
+        <p id="toggleText" style="color: #888; font-size: 12px; margin-top: 15px; cursor: pointer;"></p>
+        <button onclick="document.getElementById('authModal').style.display='none'" style="background:none; border:none; color: #555; margin-top: 10px; cursor: pointer;">ปิดหน้าต่าง</button>
+    </div>
+</div>
+
+    <div class="hero">
+        <h1>MOVIE UNLIMITED<br><span style="color:var(--primary)">เริ่มต้นเพียง 59.-/เดือน</span></h1>
+        <p>รวมแอปสตรีมมิ่งยอดนิยมไว้ในที่เดียว ทั้ง Netflix, Disney+, YouTube Premium และอื่นๆ อีกมากมาย รับประกันดูแลตลอดการใช้งาน</p>
+        <a href="#store" class="btn-cta">เลือกซื้อแพ็คเกจ</a>
+    </div>
+
+    <div id="store" class="content-section">
+        <h2 class="section-title">แพ็คเกจยอดนิยม</h2>
+        
+        <div class="grid" id="product-list">
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=500" alt="Netflix">
+                <div class="product-info">
+                    <h3>Netflix VIP Ultra HD 30 วัน</h3>
+                    <p>รับชมความคมชัดระดับ 4K HDR บนทีวี มือถือ หรือคอมพิวเตอร์ ได้ทุกที่</p>
+                    <div class="product-footer">
+                        <span class="price">150.-</span>
+                        <button class="btn-buy">ซื้อเลย</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1620332372374-f108c53d2e03?w=500" alt="Disney+">
+                <div class="product-info">
+                    <h3>Disney+ Hotstar 1 ปี</h3>
+                    <p>รับชมภาพยนตร์จาก Marvel, Pixar และ Disney ได้ไม่จำกัด</p>
+                    <div class="product-footer">
+                        <span class="price">760.-</span>
+                        <button class="btn-buy">ซื้อเลย</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1619689751121-73359f795771?w=500" alt="YouTube">
+                <div class="product-info">
+                    <h3>YouTube Premium 30 วัน</h3>
+                    <p>ดูวิดีโอแบบไม่มีโฆษณาคั่น ฟังเพลงผ่าน YouTube Music แบบปิดหน้าจอได้</p>
+                    <div class="product-footer">
+                        <span class="price">45.-</span>
+                        <button class="btn-buy">ซื้อเลย</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="viewModal" class="modal-backdrop" style="display:none;">
-        <div class="modal" style="background: #181818; border: 1px solid #e50914; max-width: 350px; padding: 30px; border-radius: 15px; margin: 150px auto; text-align: center;">
-            <h3 style="color:#e50914">🔑 ข้อมูลเข้าใช้งาน</h3>
-            <div style="background:#222; padding:15px; border-radius:8px; margin:20px 0; text-align:left;">
-                <p><strong>Email:</strong> <span id="showEmail"></span></p>
-                <p><strong>Password:</strong> <span id="showPass"></span></p>
-            </div>
-            <button class="btn btn-primary" onclick="this.parentElement.parentElement.style.display='none'">ปิดหน้าต่าง</button>
-        </div>
-    </div>
-
-    <script>
-        function viewCreds(email, pass) {
-            document.getElementById('showEmail').innerText = email;
-            document.getElementById('showPass').innerText = pass;
-            document.getElementById('viewModal').style.display = 'block';
-        }
-        function renderHistory() {
-    const user = getCurrentUser();
-    const orders = getOrders().filter(o => o.userId === user.id);
-    const container = document.getElementById('historyContent');
-
-    if (orders.length === 0) {
-        container.innerHTML = "<p>คุณยังไม่มีประวัติการซื้อ</p>";
-        return;
-    }
-
-    container.innerHTML = orders.map(order => `
-        <div class="history-card">
-            <h4>${order.productName}</h4>
-            <p>สถานะ: ${order.status}</p>
-            <button onclick="viewAccount('${order.id}')">☰ ดูรหัสผ่าน</button>
-        </div>
-    `).join('');
-}
-    </script>
 </body>
 </html>
